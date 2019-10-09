@@ -41,7 +41,6 @@ class UpdateItem extends Component {
   updateitem = (e, updateItemMutation) => {
     e.preventDefault();
     console.log('Updating Item');
-    console.log(this.state);
   };
 
   render() {
