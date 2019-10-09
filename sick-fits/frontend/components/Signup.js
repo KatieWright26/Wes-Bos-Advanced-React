@@ -37,7 +37,7 @@ class Signup extends Component {
             method="post"
             onSubmit={async e => {
               e.preventDefault();
-              const res = await signup();
+              await signup();
               this.setState({ name: '', email: '', password: '' });
             }}
           >
