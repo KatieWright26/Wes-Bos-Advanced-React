@@ -1,3 +1,4 @@
+const { hasPermission } = require('../utils');
 const { randomBytes } = require("crypto");
 const { promisify } = require("util");
 const bcrypt = require('bcryptjs');
@@ -168,6 +169,32 @@ const Mutations = {
     });
     // return the new user
     return user;
+  },
+
+  async updatePermissions(parent, args, ctx, info) {
+    // check if logged in
+    if(!ctx.request.userId) {
+      throw new Error("You must be logged in")
+    }
+    // query current user
+    const currentUser = await ctx.db.query.user({
+      where: {
+        id: ctx.request.userId,
+      },
+    }, info);
+    // check permissions
+    hasPermission(currentUser, ['ADMIN', 'PERMISSIONUPDATE']);
+    // update permissions
+    return ctx.db.mutation.updateUser({
+      data: {
+        permissions: {
+          set: args.permissions,
+        },
+      },
+      where: {
+        id: args.userId
+      },
+    }, info);
   }
 };
 
