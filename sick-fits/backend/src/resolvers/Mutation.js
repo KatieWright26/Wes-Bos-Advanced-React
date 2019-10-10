@@ -59,6 +59,7 @@ const Mutations = {
     // 3. Delete it!
     return ctx.db.mutation.deleteItem({ where }, info);
   },
+
   async signup(parent, args, ctx, info) {
     // lowercase their email
     args.email = args.email.toLowerCase();
@@ -85,6 +86,7 @@ const Mutations = {
     // Finalllllly we return the user to the browser
     return user;
   },
+
   async signin(parent, { email, password }, ctx, info) {
     // 1. check if there is a user with that email
     const user = await ctx.db.query.user({ where: { email } });
@@ -201,6 +203,39 @@ const Mutations = {
         id: args.userId
       },
     }, info);
+  },
+
+  async addToCart(parent, args, ctx, info) {
+    // User is signed in
+    const { userId } = ctx.request;
+    if(!userId) {
+      throw new Error('You must be signed in');
+    }
+    // Query the users current cart
+    const [existingCartItem] = await ctx.db.query.cartItems({
+      where: {
+        user: { id: userId },
+        item: { id: args.id },
+      }
+    });
+    // Check if that item is already in their cart and increment by 1 if it is
+    if(existingCartItem) {
+      return ctx.db.mutation.updateCartItem({
+        where: { id: existingCartItem.id },
+        data: { quantity: existingCartItem.quantity + 1},
+      }, info);
+    }
+    // If not, create a fresh cartItem fror this user
+    return ctx.db.mutation.createCartItem({
+      data: {
+        user: {
+          connect: { id: userId },
+        },
+        item: {
+          connect: { id: args.id },
+        },
+      },
+    }, info)
   }
 };
 
