@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/katiewright/personal-sick-fits/dev
-# timestamp: Thu Oct 10 2019 16:15:45 GMT+0200 (CEST)
+# timestamp: Fri Oct 11 2019 13:30:22 GMT+0200 (CEST)
 
 type AggregateCartItem {
   count: Int!
@@ -22,7 +22,7 @@ type CartItem implements Node {
   id: ID!
   quantity: Int!
   user: User!
-  item: Item!
+  item: Item
 }
 
 """A connection to a list of items."""
@@ -39,7 +39,7 @@ input CartItemCreateInput {
   id: ID
   quantity: Int
   user: UserCreateOneWithoutCartInput!
-  item: ItemCreateOneInput!
+  item: ItemCreateOneInput
 }
 
 input CartItemCreateManyWithoutUserInput {
@@ -50,7 +50,7 @@ input CartItemCreateManyWithoutUserInput {
 input CartItemCreateWithoutUserInput {
   id: ID
   quantity: Int
-  item: ItemCreateOneInput!
+  item: ItemCreateOneInput
 }
 
 """An edge in a connection."""
@@ -189,7 +189,7 @@ input CartItemSubscriptionWhereInput {
 input CartItemUpdateInput {
   quantity: Int
   user: UserUpdateOneRequiredWithoutCartInput
-  item: ItemUpdateOneRequiredInput
+  item: ItemUpdateOneInput
 }
 
 input CartItemUpdateManyDataInput {
@@ -219,7 +219,7 @@ input CartItemUpdateManyWithWhereNestedInput {
 
 input CartItemUpdateWithoutUserDataInput {
   quantity: Int
-  item: ItemUpdateOneRequiredInput
+  item: ItemUpdateOneInput
 }
 
 input CartItemUpdateWithWhereUniqueWithoutUserInput {
@@ -455,9 +455,11 @@ input ItemUpdateManyMutationInput {
   price: Int
 }
 
-input ItemUpdateOneRequiredInput {
+input ItemUpdateOneInput {
   create: ItemCreateInput
   connect: ItemWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
   update: ItemUpdateDataInput
   upsert: ItemUpsertNestedInput
 }
