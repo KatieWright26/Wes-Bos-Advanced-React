@@ -21,7 +21,7 @@ const CartItemStyles = styled.li`
 
 const CartItem = ({ cartItem }) => (
   <CartItemStyles>
-    <img src={cartItem.item.image} alt={cartItem.item.title} />
+    <img width="100" src={cartItem.item.image} alt={cartItem.item.title} />
     <div className="cart-item-details">
       <h3>{cartItem.item.title}</h3>
       <p>
