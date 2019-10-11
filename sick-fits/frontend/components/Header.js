@@ -4,6 +4,7 @@ import Router from 'next/router';
 import NProgress from 'nprogress';
 import Cart from './Cart';
 import Nav from './Nav';
+import Search from './Search';
 
 Router.onRouteChangeStart = () => {
   NProgress.start();
@@ -22,7 +23,7 @@ const Logo = styled.h1`
   z-index: 2;
   transform: skew(-7deg);
   a {
-    padding: 1.5rem 1rem;
+    padding: 0.5rem 1rem;
     background: ${props => props.theme.red};
     color: white;
     text-transform: uppercase;
@@ -42,7 +43,7 @@ const StyledHeader = styled.header`
     justify-content: space-between;
     align-items: stretch;
     @media (max-width: 1300px) {
-      grid-template-columns: center 1fr;
+      grid-template-columns: 1fr;
       justify-content: center;
     }
   }
@@ -64,7 +65,7 @@ const Header = () => (
       <Nav />
     </div>
     <div className="sub-bar">
-      <p>Search</p>
+      <Search />
     </div>
     <Cart />
   </StyledHeader>
