@@ -282,23 +282,46 @@ const Mutations = {
             id
             description
             image
+            largeImage
           }
         }
       }`
     );
     // Recalculate the total for the price
-      const amount = user.cart.reduce((tally, cartItem) => tally + cartItem.item.price * cartItem.quantity, 0);
-      console.log(`Charging ${amount}`)
+      const amount = user.cart.reduce(
+        (tally, cartItem) => tally + cartItem.item.price * cartItem.quantity, 0);
     // Create the stripe charge (turn token into money)
       const charge = await stripe.charges.create({
         amount,
         currency: 'USD',
         source: args.token,
-      })
+      });
     // Convert the cartitems to order items
+    const orderItems = user.cart.map(cartItem => {
+      const orderItem = {
+        ...cartItem.item,
+        quantity: cartItem.quantity,
+        user: { connect: { id: userId } },
+      };
+      delete orderItem.id;
+      return orderItem;
+    });
     // Create the order
+    const order = await ctx.db.mutation.createOrder({
+      data: {
+        total: charge.amount,
+        charge: charge.id,
+        items: { create: orderItems },
+        user: { connect: { id: userId } },
+      },
+    });
     // Clean up  - clear users cart, delete cart items
+    const cartItemIds = user.cart.map(cartItem => cartItem.id)
+    await ctx.db.mutation.deleteManyCartItems({
+      where: { id_in: cartItemIds, },
+    });
     // return the order to the client
+    return order;
   },
 };
 
